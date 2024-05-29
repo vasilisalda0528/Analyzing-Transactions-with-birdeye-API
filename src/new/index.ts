@@ -97,8 +97,8 @@ async function fetchPrices() {
       currentVal > oldVal ? 'Buy' : currentVal < oldVal ? 'Sell' : 'None';
     diff = Math.abs(currentVal - oldVal);
     percentage = ((currentVal - oldVal) / oldVal) * 100;
-    // console.log('percentage:', ((currentVal - oldVal) / oldVal) * 100);
     updatePrices(diff, status, currentVal, percentage);
+    sliderBar(percentage);
   } catch (error) {
     console.error('Error fetching prices:', error);
   }
@@ -142,5 +142,38 @@ function convertHumanTimeToUnixTime(humanTime: string): number {
   const unixTime = Date.parse(humanTime) / 1000; // Convert the humanTime to Unix time
   return unixTime;
 }
+
+const sliderBar = (percentage: number) => {
+  const slider = document.getElementById('myRange') as HTMLInputElement;
+  const valueDisplay = document.getElementById('valueDisplay') as HTMLElement;
+
+  // Set initial value display
+  if (valueDisplay && slider) {
+    valueDisplay.innerHTML = slider.value + '%';
+
+    // Update value display position on slider input
+    slider.addEventListener('input', function () {
+      const newValue = ((+slider.value / 100) *
+        (slider.offsetWidth - 10)) as number; // Explicitly convert to number
+      valueDisplay.style.left = newValue + 'px';
+      valueDisplay.innerHTML = slider.value + '%';
+    });
+
+    // Auto change slider value
+    // let value = 50; // Initial value
+    // setInterval(function () {
+    //   if (value < 100) {
+    //     value++;
+    //   } else {
+    //     value = 0;
+    //   }
+    slider.value = percentage.toString();
+    const newValue = ((slider.valueAsNumber / 100) *
+      (slider.offsetWidth - 10)) as number; // Explicitly convert to number
+    valueDisplay.style.left = newValue + 'px';
+    valueDisplay.innerHTML = slider.value + '%';
+    // }, 100);
+  }
+};
 
 setInterval(fetchPrices, 5000);

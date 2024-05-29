@@ -3,6 +3,7 @@
 
 <head>
     <title>Stock Prices</title>
+    <link href="" />
     <style>
         /* .buy {
             background-color: green;
@@ -138,6 +139,40 @@ body {
           </div>                       
         </div> 
     </div>
+<input type="range" id="myRange" min="0" max="100" value="50" style="appearance: none; width: 100%; height: 10px; background: #f1f1f1;">
+
+<div id="sliderContainer" style="position: relative;">
+    <div id="valueDisplay" style="position: absolute; top: 0; left: 0;"></div>
+</div>
+
+<!-- <script>
+var slider = document.getElementById("myRange");
+var valueDisplay = document.getElementById("valueDisplay");
+
+// Set initial value display
+valueDisplay.innerHTML = slider.value + "%";
+
+// Update value display position on slider input
+slider.addEventListener("input", function() {
+    var newValue = (slider.value / 100) * (slider.offsetWidth - 10); // Subtract 10 to center the display
+    valueDisplay.style.left = newValue + "px";
+    valueDisplay.innerHTML = slider.value + "%";
+});
+
+// Auto change slider value
+var value = 50; // Initial value
+setInterval(function(){
+    if(value < 100){
+        value++;
+    } else {
+        value = 0;
+    }
+    slider.value = value;
+    var newValue = (slider.value / 100) * (slider.offsetWidth - 10); // Subtract 10 to center the display
+    valueDisplay.style.left = newValue + "px";
+    valueDisplay.innerHTML = slider.value + "%";
+}, 100); // Change every 100ms
+</script> -->
     <script src="index.js"></script>
 </body>
 

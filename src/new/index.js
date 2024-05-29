@@ -116,8 +116,8 @@ function fetchPrices() {
                         currentVal > oldVal ? 'Buy' : currentVal < oldVal ? 'Sell' : 'None';
                     diff = Math.abs(currentVal - oldVal);
                     percentage = ((currentVal - oldVal) / oldVal) * 100;
-                    // console.log('percentage:', ((currentVal - oldVal) / oldVal) * 100);
                     updatePrices(diff, status, currentVal, percentage);
+                    sliderBar(percentage);
                     return [3 /*break*/, 5];
                 case 4:
                     error_1 = _a.sent();
@@ -160,4 +160,33 @@ function convertHumanTimeToUnixTime(humanTime) {
     var unixTime = Date.parse(humanTime) / 1000; // Convert the humanTime to Unix time
     return unixTime;
 }
+var sliderBar = function (percentage) {
+    var slider = document.getElementById('myRange');
+    var valueDisplay = document.getElementById('valueDisplay');
+    // Set initial value display
+    if (valueDisplay && slider) {
+        valueDisplay.innerHTML = slider.value + '%';
+        // Update value display position on slider input
+        slider.addEventListener('input', function () {
+            var newValue = ((+slider.value / 100) *
+                (slider.offsetWidth - 10)); // Explicitly convert to number
+            valueDisplay.style.left = newValue + 'px';
+            valueDisplay.innerHTML = slider.value + '%';
+        });
+        // Auto change slider value
+        // let value = 50; // Initial value
+        // setInterval(function () {
+        //   if (value < 100) {
+        //     value++;
+        //   } else {
+        //     value = 0;
+        //   }
+        slider.value = percentage.toString();
+        var newValue = ((slider.valueAsNumber / 100) *
+            (slider.offsetWidth - 10)); // Explicitly convert to number
+        valueDisplay.style.left = newValue + 'px';
+        valueDisplay.innerHTML = slider.value + '%';
+        // }, 100);
+    }
+};
 setInterval(fetchPrices, 5000);
