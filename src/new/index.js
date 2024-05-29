@@ -73,7 +73,7 @@ function fetchData(headers, params, baseurl) {
 }
 function fetchPrices() {
     return __awaiter(this, void 0, void 0, function () {
-        var currentUnixTime, oneHourAgo, diff, status, percentage, headers_price, params_price, headers_history, params_history, currentPrice, AhourAgo, error_1;
+        var currentUnixTime, oneHourAgo, diff, status, percentage, headers_price, params_price, headers_tokenList, params_tokenList, headers_history, params_history, currentPrice, AhourAgo, TokenList, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -82,7 +82,7 @@ function fetchPrices() {
                     diff = 0, status = '', percentage = 0;
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 4, , 5]);
+                    _a.trys.push([1, 5, , 6]);
                     headers_price = {
                         Authorization: 'Bearer YourAccessTokenHere',
                         'Content-Type': 'application/json',
@@ -90,6 +90,22 @@ function fetchPrices() {
                     };
                     params_price = {
                         address: 'So11111111111111111111111111111111111111112'
+                    };
+                    headers_tokenList = {
+                        // Authorization: 'Bearer YourAccessTokenHere',
+                        // 'Content-Type': 'application/json',
+                        'x-api-key': API_KEY,
+                        'x-chain': 'solana'
+                    };
+                    params_tokenList = {
+                        // address: 'So11111111111111111111111111111111111111112',
+                        // quote_address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                        // address_type: 'token',
+                        // type: '15m',
+                        // time_from: `${oneHourAgo}`,
+                        // time_to: `${currentUnixTime}`,
+                        sort_type: 'desc',
+                        srot_by: 'mc'
                     };
                     headers_history = {
                         Authorization: 'Bearer YourAccessTokenHere',
@@ -108,6 +124,10 @@ function fetchPrices() {
                     return [4 /*yield*/, fetchData(headers_history, params_history, priceHistory)];
                 case 3:
                     AhourAgo = _a.sent();
+                    return [4 /*yield*/, fetchData(headers_tokenList, params_tokenList, tokenList_endpoint)];
+                case 4:
+                    TokenList = _a.sent();
+                    console.log({ TokenList: TokenList });
                     // console.log({ currentPrice, AhourAgo });
                     currentVal = currentPrice.data.value;
                     oldVal = AhourAgo.data.items[0].value;
@@ -117,13 +137,13 @@ function fetchPrices() {
                     diff = Math.abs(currentVal - oldVal);
                     percentage = ((currentVal - oldVal) / oldVal) * 100;
                     updatePrices(diff, status, currentVal, percentage);
-                    sliderBar(percentage);
-                    return [3 /*break*/, 5];
-                case 4:
+                    sliderBar(percentage * 100);
+                    return [3 /*break*/, 6];
+                case 5:
                     error_1 = _a.sent();
                     console.error('Error fetching prices:', error_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
@@ -163,9 +183,12 @@ function convertHumanTimeToUnixTime(humanTime) {
 var sliderBar = function (percentage) {
     var slider = document.getElementById('myRange');
     var valueDisplay = document.getElementById('valueDisplay');
+    // console.log('sliderbar');
     // Set initial value display
     if (valueDisplay && slider) {
         valueDisplay.innerHTML = slider.value + '%';
+        console.log(slider.value);
+        // console.log('object not null');
         // Update value display position on slider input
         slider.addEventListener('input', function () {
             var newValue = ((+slider.value / 100) *

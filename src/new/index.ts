@@ -66,6 +66,24 @@ async function fetchPrices() {
       // offset : 0,
       // limit : 10
     };
+    const headers_tokenList = {
+      // Authorization: 'Bearer YourAccessTokenHere',
+      // 'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'x-chain': 'solana',
+    };
+    const params_tokenList = {
+      // address: 'So11111111111111111111111111111111111111112',
+      // quote_address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      // address_type: 'token',
+      // type: '15m',
+      // time_from: `${oneHourAgo}`,
+      // time_to: `${currentUnixTime}`,
+      sort_type: 'desc',
+      srot_by: 'mc',
+      // offset : 0,
+      // limit : 10
+    };
     const headers_history = {
       Authorization: 'Bearer YourAccessTokenHere',
       'Content-Type': 'application/json',
@@ -88,7 +106,12 @@ async function fetchPrices() {
       params_history,
       priceHistory,
     );
-
+    const TokenList = await fetchData(
+      headers_tokenList,
+      params_tokenList,
+      tokenList_endpoint,
+    );
+    console.log({ TokenList });
     // console.log({ currentPrice, AhourAgo });
     currentVal = currentPrice.data.value;
     oldVal = AhourAgo.data.items[0].value;
@@ -98,7 +121,7 @@ async function fetchPrices() {
     diff = Math.abs(currentVal - oldVal);
     percentage = ((currentVal - oldVal) / oldVal) * 100;
     updatePrices(diff, status, currentVal, percentage);
-    sliderBar(percentage);
+    sliderBar(percentage * 100);
   } catch (error) {
     console.error('Error fetching prices:', error);
   }
@@ -145,12 +168,13 @@ function convertHumanTimeToUnixTime(humanTime: string): number {
 
 const sliderBar = (percentage: number) => {
   const slider = document.getElementById('myRange') as HTMLInputElement;
-  const valueDisplay = document.getElementById('valueDisplay') as HTMLElement;
-
+  const valueDisplay = document.getElementById('valueDisplay');
+  // console.log('sliderbar');
   // Set initial value display
   if (valueDisplay && slider) {
     valueDisplay.innerHTML = slider.value + '%';
-
+    console.log(slider.value);
+    // console.log('object not null');
     // Update value display position on slider input
     slider.addEventListener('input', function () {
       const newValue = ((+slider.value / 100) *
