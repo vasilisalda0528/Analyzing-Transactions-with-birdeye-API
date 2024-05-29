@@ -1,2 +1,6 @@
 // eslint-disable-next-line no-console
-console.log('Hello world!');
+import { fetchData, fetchMarketDataPeriodically } from "./fetchingData";
+
+// fetchData();
+fetchMarketDataPeriodically();
+// console.log('Hello world!');
