@@ -169,17 +169,27 @@ function convertHumanTimeToUnixTime(humanTime: string): number {
 const sliderBar = (percentage: number) => {
   // Implementation of slider bar UI
   const slider = document.getElementById('myRange') as HTMLInputElement;
-  const valueDisplay = document.getElementById('valueDisplay');
+  const valueDisplay = document.getElementById('valueDisplay') as HTMLElement;
+  const buyBar = document.querySelector('.buy') as HTMLDivElement;
+
   // Set initial value display
   if (valueDisplay && slider) {
     valueDisplay.innerHTML = slider.value + '%';
     console.log(slider.value);
     // Update value display position on slider input
     slider.addEventListener('input', function () {
+      const value = parseInt(slider.value);
       const newValue = ((+slider.value / 100) *
         (slider.offsetWidth - 10)) as number; // Explicitly convert to number
       valueDisplay.style.left = newValue + 'px';
       valueDisplay.innerHTML = slider.value + '%';
+      buyBar.style.width = Math.abs(value) + '%';
+      if (value < 0) {
+        buyBar.style.backgroundColor = '#EF476F';
+      } else {
+        buyBar.style.backgroundColor = '#2ECC40';
+      }
+      // valueDisplay.innerText = value;
     });
 
     // Auto change slider value
@@ -192,4 +202,4 @@ const sliderBar = (percentage: number) => {
 };
 
 // Interval to fetch prices every 5 seconds
-setInterval(fetchPrices, 5000);
+setInterval(fetchPrices, 1000);

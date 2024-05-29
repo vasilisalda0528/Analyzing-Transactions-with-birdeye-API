@@ -197,16 +197,26 @@ var sliderBar = function (percentage) {
     // Implementation of slider bar UI
     var slider = document.getElementById('myRange');
     var valueDisplay = document.getElementById('valueDisplay');
+    var buyBar = document.querySelector('.buy');
     // Set initial value display
     if (valueDisplay && slider) {
         valueDisplay.innerHTML = slider.value + '%';
         console.log(slider.value);
         // Update value display position on slider input
         slider.addEventListener('input', function () {
+            var value = parseInt(slider.value);
             var newValue = ((+slider.value / 100) *
                 (slider.offsetWidth - 10)); // Explicitly convert to number
             valueDisplay.style.left = newValue + 'px';
             valueDisplay.innerHTML = slider.value + '%';
+            buyBar.style.width = Math.abs(value) + '%';
+            if (value < 0) {
+                buyBar.style.backgroundColor = '#EF476F';
+            }
+            else {
+                buyBar.style.backgroundColor = '#2ECC40';
+            }
+            // valueDisplay.innerText = value;
         });
         // Auto change slider value
         slider.value = percentage.toString();
@@ -217,4 +227,4 @@ var sliderBar = function (percentage) {
     }
 };
 // Interval to fetch prices every 5 seconds
-setInterval(fetchPrices, 5000);
+setInterval(fetchPrices, 1000);
