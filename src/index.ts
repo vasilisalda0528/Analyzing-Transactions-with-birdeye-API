@@ -16,7 +16,9 @@ const listSupportedchain_endpoint =
 let currentVal: any = 0,
   oldVal: any = 0;
 
+// Function to fetch data from API endpoint
 async function fetchData(headers: any, params: any, baseurl: string) {
+  // Implementation of fetching data from API
   const queryString = new URLSearchParams(params).toString();
   const url = `${baseurl}?${queryString}`;
 
@@ -24,6 +26,24 @@ async function fetchData(headers: any, params: any, baseurl: string) {
     headers: headers,
   })
     .then((response) => {
+      //--Save data to database--
+      // fetch(url, {
+      //   method: 'POST',
+      //   headers: headers,
+      //   body: JSON.stringify(dataToSave),
+      // })
+      //   .then((response) => {
+      //     if (!response.ok) {
+      //       throw new Error('Network response was not ok');
+      //     }
+      //     return response.json();
+      //   })
+      //   .then((data) => {
+      //     console.log('Data saved successfully:', data);
+      //   })
+      //   .catch((error) => {
+      //     console.error('Error saving data to backend:', error);
+      //   });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -37,7 +57,9 @@ async function fetchData(headers: any, params: any, baseurl: string) {
     });
 }
 
+// Function to fetch prices from API
 async function fetchPrices() {
+  // Implementation of fetching prices from API
   const currentUnixTime = Math.floor(new Date().getTime() / 1000);
   const oneHourAgo = Math.floor((new Date().getTime() - 1800000) / 1000);
   let diff: number = 0,
@@ -102,12 +124,14 @@ async function fetchPrices() {
   }
 }
 
+// Function to update prices and display on UI
 function updatePrices(
   diff: number,
   status: string,
   currentprice: number,
   percentage: number,
 ) {
+  // Implementation of updating prices and status
   const buy = document.getElementById('buy');
   if (buy)
     buy.innerHTML =
@@ -134,12 +158,16 @@ function updatePrices(
           `${currentprice.toFixed(2)}`;
 }
 
+// Function to convert human readable time to Unix time
 function convertHumanTimeToUnixTime(humanTime: string): number {
+  // Implementation of converting human time to Unix time
   const unixTime = Date.parse(humanTime) / 1000; // Convert the humanTime to Unix time
   return unixTime;
 }
 
+// Function to initialize and update slider bar UI
 const sliderBar = (percentage: number) => {
+  // Implementation of slider bar UI
   const slider = document.getElementById('myRange') as HTMLInputElement;
   const valueDisplay = document.getElementById('valueDisplay');
   // Set initial value display
@@ -163,4 +191,5 @@ const sliderBar = (percentage: number) => {
   }
 };
 
+// Interval to fetch prices every 5 seconds
 setInterval(fetchPrices, 5000);

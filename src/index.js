@@ -47,6 +47,7 @@ var tokenOverview_endpoint = 'https://public-api.birdeye.so/defi/token_overview'
 var tokenList_endpoint = 'https://public-api.birdeye.so/defi/tokenlist';
 var listSupportedchain_endpoint = 'https://public-api.birdeye.so/v1/wallet/list_supported_chain';
 var currentVal = 0, oldVal = 0;
+// Function to fetch data from API endpoint
 function fetchData(headers, params, baseurl) {
     return __awaiter(this, void 0, void 0, function () {
         var queryString, url;
@@ -57,6 +58,24 @@ function fetchData(headers, params, baseurl) {
                     headers: headers
                 })
                     .then(function (response) {
+                    //--Save data to database--
+                    // fetch(url, {
+                    //   method: 'POST',
+                    //   headers: headers,
+                    //   body: JSON.stringify(dataToSave),
+                    // })
+                    //   .then((response) => {
+                    //     if (!response.ok) {
+                    //       throw new Error('Network response was not ok');
+                    //     }
+                    //     return response.json();
+                    //   })
+                    //   .then((data) => {
+                    //     console.log('Data saved successfully:', data);
+                    //   })
+                    //   .catch((error) => {
+                    //     console.error('Error saving data to backend:', error);
+                    //   });
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
@@ -70,6 +89,7 @@ function fetchData(headers, params, baseurl) {
         });
     });
 }
+// Function to fetch prices from API
 function fetchPrices() {
     return __awaiter(this, void 0, void 0, function () {
         var currentUnixTime, oneHourAgo, diff, status, percentage, headers_price, params_price, headers_tokenList, params_tokenList, headers_history, params_history, currentPrice, AhourAgo, TokenList, error_1;
@@ -138,7 +158,9 @@ function fetchPrices() {
         });
     });
 }
+// Function to update prices and display on UI
 function updatePrices(diff, status, currentprice, percentage) {
+    // Implementation of updating prices and status
     var buy = document.getElementById('buy');
     if (buy)
         buy.innerHTML =
@@ -164,11 +186,15 @@ function updatePrices(diff, status, currentprice, percentage) {
                         'CurrentPrice = ' +
                         "".concat(currentprice.toFixed(2));
 }
+// Function to convert human readable time to Unix time
 function convertHumanTimeToUnixTime(humanTime) {
+    // Implementation of converting human time to Unix time
     var unixTime = Date.parse(humanTime) / 1000; // Convert the humanTime to Unix time
     return unixTime;
 }
+// Function to initialize and update slider bar UI
 var sliderBar = function (percentage) {
+    // Implementation of slider bar UI
     var slider = document.getElementById('myRange');
     var valueDisplay = document.getElementById('valueDisplay');
     // Set initial value display
@@ -190,4 +216,5 @@ var sliderBar = function (percentage) {
         valueDisplay.innerHTML = slider.value + '%';
     }
 };
+// Interval to fetch prices every 5 seconds
 setInterval(fetchPrices, 5000);
