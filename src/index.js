@@ -150,8 +150,8 @@ function fetchPrices() {
 }
 function updatePrices(diff, status, currentprice, percentage) {
     var buy = document.getElementById('buy');
-    var buyElement = document.querySelector('.progress-bar2');
-    buyElement.style.setProperty('--buy-width', "".concat((diff * 1000).toFixed(2), "px"));
+    // const buyElement = document.querySelector('.progress-bar2') as HTMLElement;
+    // buyElement.style.setProperty('--buy-width', `${(diff * 1000).toFixed(2)}px`);
     if (buy)
         buy.innerHTML =
             status == 'Buy'

@@ -134,8 +134,8 @@ function updatePrices(
   percentage: number,
 ) {
   const buy = document.getElementById('buy');
-  const buyElement = document.querySelector('.progress-bar2') as HTMLElement;
-  buyElement.style.setProperty('--buy-width', `${(diff * 1000).toFixed(2)}px`);
+  // const buyElement = document.querySelector('.progress-bar2') as HTMLElement;
+  // buyElement.style.setProperty('--buy-width', `${(diff * 1000).toFixed(2)}px`);
   if (buy)
     buy.innerHTML =
       status == 'Buy'
