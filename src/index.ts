@@ -30,7 +30,6 @@ async function fetchData(headers: any, params: any, baseurl: string) {
       return response.json();
     })
     .then((data) => {
-      // console.log({ data });
       return data;
     })
     .catch((error) => {
@@ -44,10 +43,6 @@ async function fetchPrices() {
   let diff: number = 0,
     status: string = '',
     percentage: number = 0;
-
-  // console.log('Current Unix Time: ' + currentUnixTime);
-  // console.log('Time 1 hour ago: ' + oneHourAgo);
-
   try {
     const headers_price = {
       Authorization: 'Bearer YourAccessTokenHere',
@@ -56,33 +51,14 @@ async function fetchPrices() {
     };
     const params_price = {
       address: 'So11111111111111111111111111111111111111112',
-      // quote_address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      // address_type: 'token',
-      // type: '15m',
-      // time_from: `${oneHourAgo}`,
-      // time_to: `${currentUnixTime}`,
-      // sort_type:'desc',
-      // srot_by:'v24hUSD',
-      // offset : 0,
-      // limit : 10
     };
     const headers_tokenList = {
-      // Authorization: 'Bearer YourAccessTokenHere',
-      // 'Content-Type': 'application/json',
       'x-api-key': API_KEY,
       'x-chain': 'solana',
     };
     const params_tokenList = {
-      // address: 'So11111111111111111111111111111111111111112',
-      // quote_address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      // address_type: 'token',
-      // type: '15m',
-      // time_from: `${oneHourAgo}`,
-      // time_to: `${currentUnixTime}`,
       sort_type: 'desc',
       srot_by: 'mc',
-      // offset : 0,
-      // limit : 10
     };
     const headers_history = {
       Authorization: 'Bearer YourAccessTokenHere',
@@ -112,7 +88,6 @@ async function fetchPrices() {
       tokenList_endpoint,
     );
     console.log({ TokenList });
-    // console.log({ currentPrice, AhourAgo });
     currentVal = currentPrice.data.value;
     oldVal = AhourAgo.data.items[0].value;
     console.log({ oldVal });
@@ -134,8 +109,6 @@ function updatePrices(
   percentage: number,
 ) {
   const buy = document.getElementById('buy');
-  // const buyElement = document.querySelector('.progress-bar2') as HTMLElement;
-  // buyElement.style.setProperty('--buy-width', `${(diff * 1000).toFixed(2)}px`);
   if (buy)
     buy.innerHTML =
       status == 'Buy'
@@ -169,12 +142,10 @@ function convertHumanTimeToUnixTime(humanTime: string): number {
 const sliderBar = (percentage: number) => {
   const slider = document.getElementById('myRange') as HTMLInputElement;
   const valueDisplay = document.getElementById('valueDisplay');
-  // console.log('sliderbar');
   // Set initial value display
   if (valueDisplay && slider) {
     valueDisplay.innerHTML = slider.value + '%';
     console.log(slider.value);
-    // console.log('object not null');
     // Update value display position on slider input
     slider.addEventListener('input', function () {
       const newValue = ((+slider.value / 100) *
@@ -184,19 +155,11 @@ const sliderBar = (percentage: number) => {
     });
 
     // Auto change slider value
-    // let value = 50; // Initial value
-    // setInterval(function () {
-    //   if (value < 100) {
-    //     value++;
-    //   } else {
-    //     value = 0;
-    //   }
     slider.value = percentage.toString();
     const newValue = ((slider.valueAsNumber / 100) *
       (slider.offsetWidth - 10)) as number; // Explicitly convert to number
     valueDisplay.style.left = newValue + 'px';
     valueDisplay.innerHTML = slider.value + '%';
-    // }, 100);
   }
 };
 

@@ -63,7 +63,6 @@ function fetchData(headers, params, baseurl) {
                     return response.json();
                 })
                     .then(function (data) {
-                    // console.log({ data });
                     return data;
                 })["catch"](function (error) {
                     console.error('Error fetching data:', error);
@@ -92,18 +91,10 @@ function fetchPrices() {
                         address: 'So11111111111111111111111111111111111111112'
                     };
                     headers_tokenList = {
-                        // Authorization: 'Bearer YourAccessTokenHere',
-                        // 'Content-Type': 'application/json',
                         'x-api-key': API_KEY,
                         'x-chain': 'solana'
                     };
                     params_tokenList = {
-                        // address: 'So11111111111111111111111111111111111111112',
-                        // quote_address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-                        // address_type: 'token',
-                        // type: '15m',
-                        // time_from: `${oneHourAgo}`,
-                        // time_to: `${currentUnixTime}`,
                         sort_type: 'desc',
                         srot_by: 'mc'
                     };
@@ -128,7 +119,6 @@ function fetchPrices() {
                 case 4:
                     TokenList = _a.sent();
                     console.log({ TokenList: TokenList });
-                    // console.log({ currentPrice, AhourAgo });
                     currentVal = currentPrice.data.value;
                     oldVal = AhourAgo.data.items[0].value;
                     console.log({ oldVal: oldVal });
@@ -150,8 +140,6 @@ function fetchPrices() {
 }
 function updatePrices(diff, status, currentprice, percentage) {
     var buy = document.getElementById('buy');
-    // const buyElement = document.querySelector('.progress-bar2') as HTMLElement;
-    // buyElement.style.setProperty('--buy-width', `${(diff * 1000).toFixed(2)}px`);
     if (buy)
         buy.innerHTML =
             status == 'Buy'
@@ -183,12 +171,10 @@ function convertHumanTimeToUnixTime(humanTime) {
 var sliderBar = function (percentage) {
     var slider = document.getElementById('myRange');
     var valueDisplay = document.getElementById('valueDisplay');
-    // console.log('sliderbar');
     // Set initial value display
     if (valueDisplay && slider) {
         valueDisplay.innerHTML = slider.value + '%';
         console.log(slider.value);
-        // console.log('object not null');
         // Update value display position on slider input
         slider.addEventListener('input', function () {
             var newValue = ((+slider.value / 100) *
@@ -197,19 +183,11 @@ var sliderBar = function (percentage) {
             valueDisplay.innerHTML = slider.value + '%';
         });
         // Auto change slider value
-        // let value = 50; // Initial value
-        // setInterval(function () {
-        //   if (value < 100) {
-        //     value++;
-        //   } else {
-        //     value = 0;
-        //   }
         slider.value = percentage.toString();
         var newValue = ((slider.valueAsNumber / 100) *
             (slider.offsetWidth - 10)); // Explicitly convert to number
         valueDisplay.style.left = newValue + 'px';
         valueDisplay.innerHTML = slider.value + '%';
-        // }, 100);
     }
 };
 setInterval(fetchPrices, 5000);
