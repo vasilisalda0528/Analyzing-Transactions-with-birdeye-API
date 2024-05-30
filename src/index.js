@@ -224,7 +224,7 @@ var sliderBar = function (percentage) {
         //   sliderRange = 1000;
         // }
         // console.log({ sliderRange, percentage });
-        sliderRange = 10.0;
+        sliderRange = 80.0;
         // Auto change slider value
         lPercent = percentage * sliderRange;
         slider.value = lPercent.toString();
