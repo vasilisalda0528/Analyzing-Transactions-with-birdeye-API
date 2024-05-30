@@ -13,6 +13,7 @@ const tokenOverview_endpoint =
 const tokenList_endpoint = 'https://public-api.birdeye.so/defi/tokenlist';
 const listSupportedchain_endpoint =
   'https://public-api.birdeye.so/v1/wallet/list_supported_chain';
+const token_address = '25hAyBQfoDhfWx9ay6rarbgvWGwDdNqcHsXS3jQ3mTDJ';
 let currentVal: any = 0,
   oldVal: any = 0;
 
@@ -61,7 +62,7 @@ async function fetchData(headers: any, params: any, baseurl: string) {
 async function fetchPrices() {
   // Implementation of fetching prices from API
   const currentUnixTime = Math.floor(new Date().getTime() / 1000);
-  const oneHourAgo = Math.floor((new Date().getTime() - 1800000) / 1000);
+  const oneHourAgo = Math.floor((new Date().getTime() - 60000) / 1000);
   let diff: number = 0,
     status: string = '',
     percentage: number = 0;
@@ -73,7 +74,7 @@ async function fetchPrices() {
       'x-api-key': API_KEY,
     };
     const params_price = {
-      address: 'So11111111111111111111111111111111111111112',
+      address: token_address,
     };
     const headers_tokenList = {
       'x-api-key': API_KEY,
@@ -83,34 +84,35 @@ async function fetchPrices() {
       sort_type: 'desc',
       srot_by: 'mc',
     };
-    // const headers_history = {
-    //   Authorization: 'Bearer YourAccessTokenHere',
-    //   'Content-Type': 'application/json',
-    //   'x-api-key': API_KEY,
-    // };
-    // const params_history = {
-    //   address: 'So11111111111111111111111111111111111111112',
-    //   type: '15m',
-    //   time_from: `${oneHourAgo}`,
-    //   time_to: `${currentUnixTime}`,
-    // };
+    const headers_history = {
+      Authorization: 'Bearer YourAccessTokenHere',
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+    };
+    const params_history = {
+      address: token_address,
+      type: '1m',
+      time_from: `${oneHourAgo}`,
+      time_to: `${currentUnixTime}`,
+    };
 
     const currentPrice = await fetchData(
       headers_price,
       params_price,
       price_endpoint,
     );
-    // const AhourAgo = await fetchData(
-    //   headers_history,
-    //   params_history,
-    //   priceHistory,
-    // );
+    console.log({ currentPrice });
+    const AhourAgo = await fetchData(
+      headers_history,
+      params_history,
+      priceHistory,
+    );
     const TokenList = await fetchData(
       headers_tokenList,
       params_tokenList,
       tokenList_endpoint,
     );
-    // console.log({ TokenList });
+    console.log({ AhourAgo });
     if (TokenList)
       Object.assign(
         selectedToken,
@@ -121,22 +123,22 @@ async function fetchPrices() {
     const marketCap = selectedToken.mc;
     console.log({ liquidity, marketCap });
     currentVal = currentPrice.data.value;
-    // oldVal = AhourAgo.data.items[0].value;
+    oldVal = AhourAgo.data.items[0] ? AhourAgo.data.items[0].value : oldVal;
     // console.log({ oldVal });
     status =
       currentVal > oldVal ? 'Buy' : currentVal < oldVal ? 'Sell' : 'None';
     diff = Math.abs(currentVal - oldVal);
     percentage = ((currentVal - oldVal) / oldVal) * 100;
-    // updatePrices(diff, status, currentVal, percentage);
-    oldVal = updatePrices(
-      diff,
-      status,
-      currentVal,
-      percentage,
-      liquidity,
-      marketCap,
-    );
-    sliderBar(percentage * 100);
+    updatePrices(diff, status, currentVal, percentage, liquidity, marketCap);
+    // oldVal = updatePrices(
+    //   diff,
+    //   status,
+    //   currentVal,
+    //   percentage,
+    //   liquidity,
+    //   marketCap,
+    // );
+    sliderBar(percentage);
   } catch (error) {
     console.error('Error fetching prices:', error);
   }
@@ -159,12 +161,12 @@ function updatePrices(
   const marketcap = document.getElementById('marketcap') as HTMLDivElement;
 
   transaction.innerHTML = pStatus;
-  status.innerHTML = diff + '';
-  price.innerHTML = currentprice + '';
-  liquidity.innerHTML = pLiquidity + '';
-  marketcap.innerHTML = marketCap + '';
+  status.innerHTML = diff.toFixed(9) + '';
+  price.innerHTML = currentprice.toFixed(9) + '';
+  liquidity.innerHTML = pLiquidity.toFixed(9) + '';
+  marketcap.innerHTML = marketCap.toFixed(9) + '';
 
-  return currentprice;
+  // return currentprice;
 }
 
 // Function to convert human readable time to Unix time
@@ -176,37 +178,36 @@ function convertHumanTimeToUnixTime(humanTime: string): number {
 
 // Function to initialize and update slider bar UI
 const sliderBar = (percentage: number) => {
+  let lPercent: number = 0,
+    sliderRange: number = 0;
   // Implementation of slider bar UI
   const slider = document.getElementById('myRange') as HTMLInputElement;
-  const valueDisplay = document.getElementById('valueDisplay') as HTMLElement;
-  const buyBar = document.querySelector('.buy') as HTMLDivElement;
+  const valueDisplay = document.getElementById(
+    'valueDisplay',
+  ) as HTMLDivElement;
+  const scaleLeft = document.getElementById('left') as HTMLDivElement;
+  const scaleRight = document.getElementById('right') as HTMLDivElement;
 
-  // Set initial value display
   if (valueDisplay && slider) {
-    valueDisplay.innerHTML = slider.value + '%';
-    console.log(slider.value);
-    // Update value display position on slider input
-    slider.addEventListener('input', function () {
-      const value = parseInt(slider.value);
-      const newValue = ((+slider.value / 100) *
-        (slider.offsetWidth - 10)) as number; // Explicitly convert to number
-      valueDisplay.style.left = newValue + 'px';
-      valueDisplay.innerHTML = slider.value + '%';
-      buyBar.style.width = Math.abs(value) + '%';
-      if (value < 0) {
-        buyBar.style.backgroundColor = '#EF476F';
-      } else {
-        buyBar.style.backgroundColor = '#2ECC40';
-      }
-      // valueDisplay.innerText = value;
-    });
-
+    if (percentage >= Math.pow(10, -1)) {
+      sliderRange = 10;
+    } else if (percentage >= Math.pow(10, -2)) {
+      sliderRange = 100;
+    } else if (percentage >= Math.pow(10, -3)) {
+      sliderRange = 1000;
+    } else {
+      sliderRange = 10000;
+    }
+    console.log({ sliderRange, percentage });
+    lPercent = percentage * sliderRange;
+    scaleLeft.innerHTML = Math.pow(10, (-sliderRange * 10) / 10) + '';
+    scaleRight.innerHTML = Math.pow(10, sliderRange / 10) + '';
     // Auto change slider value
-    slider.value = percentage.toString();
-    const newValue = ((slider.valueAsNumber / 100) *
+    slider.value = lPercent.toString();
+    const newValue = ((Math.abs(slider.valueAsNumber + 100) / 200) *
       (slider.offsetWidth - 10)) as number; // Explicitly convert to number
     valueDisplay.style.left = newValue + 'px';
-    valueDisplay.innerHTML = slider.value + '%';
+    valueDisplay.innerHTML = slider.valueAsNumber / sliderRange + '%';
   }
 };
 
@@ -217,4 +218,4 @@ const tokenFilter = (tokenList: any, tokenSymbol: string) => {
 };
 
 // Interval to fetch prices every 5 seconds
-setInterval(fetchPrices, 1000);
+setInterval(fetchPrices, 2000);
