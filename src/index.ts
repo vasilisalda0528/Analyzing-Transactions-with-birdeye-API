@@ -15,7 +15,8 @@ const listSupportedchain_endpoint =
   'https://public-api.birdeye.so/v1/wallet/list_supported_chain';
 const token_address = '25hAyBQfoDhfWx9ay6rarbgvWGwDdNqcHsXS3jQ3mTDJ';
 let currentVal: any = 0,
-  oldVal: any = 0;
+  oldVal: any = 0,
+  bar_percent: number = 0;
 
 // Function to fetch data from API endpoint
 async function fetchData(headers: any, params: any, baseurl: string) {
@@ -84,61 +85,64 @@ async function fetchPrices() {
       sort_type: 'desc',
       srot_by: 'mc',
     };
-    const headers_history = {
-      Authorization: 'Bearer YourAccessTokenHere',
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-    };
-    const params_history = {
-      address: token_address,
-      type: '1m',
-      time_from: `${oneHourAgo}`,
-      time_to: `${currentUnixTime}`,
-    };
+    // const headers_history = {
+    //   Authorization: 'Bearer YourAccessTokenHere',
+    //   'Content-Type': 'application/json',
+    //   'x-api-key': API_KEY,
+    // };
+    // const params_history = {
+    //   address: token_address,
+    //   type: '1m',
+    //   time_from: `${oneHourAgo}`,
+    //   time_to: `${currentUnixTime}`,
+    // };
 
     const currentPrice = await fetchData(
       headers_price,
       params_price,
       price_endpoint,
     );
-    console.log({ currentPrice });
-    const AhourAgo = await fetchData(
-      headers_history,
-      params_history,
-      priceHistory,
-    );
+    // console.log({ currentPrice });
+    // const AhourAgo = await fetchData(
+    //   headers_history,
+    //   params_history,
+    //   priceHistory,
+    // );
     const TokenList = await fetchData(
       headers_tokenList,
       params_tokenList,
       tokenList_endpoint,
     );
-    console.log({ AhourAgo });
+    // console.log({ AhourAgo });
     if (TokenList)
       Object.assign(
         selectedToken,
         tokenFilter(TokenList.data.tokens, 'MANEKI')[0],
       );
-    console.log({ selectedToken });
+    // console.log({ selectedToken });
     const liquidity = selectedToken.liquidity;
     const marketCap = selectedToken.mc;
-    console.log({ liquidity, marketCap });
+    // console.log({ liquidity, marketCap });
     currentVal = currentPrice.data.value;
-    oldVal = AhourAgo.data.items[0] ? AhourAgo.data.items[0].value : oldVal;
+    // oldVal = AhourAgo.data.items[0] ? AhourAgo.data.items[0].value : oldVal;
     // console.log({ oldVal });
     status =
       currentVal > oldVal ? 'Buy' : currentVal < oldVal ? 'Sell' : 'None';
     diff = Math.abs(currentVal - oldVal);
     percentage = ((currentVal - oldVal) / oldVal) * 100;
-    updatePrices(diff, status, currentVal, percentage, liquidity, marketCap);
-    // oldVal = updatePrices(
-    //   diff,
-    //   status,
-    //   currentVal,
-    //   percentage,
-    //   liquidity,
-    //   marketCap,
-    // );
-    sliderBar(percentage);
+    bar_percent = bar_percent + percentage;
+    if (percentage == Infinity) bar_percent = 0;
+    console.log({ percentage, bar_percent });
+    // updatePrices(diff, status, currentVal, percentage, liquidity, marketCap);
+    oldVal = updatePrices(
+      diff,
+      status,
+      currentVal,
+      percentage,
+      liquidity,
+      marketCap,
+    );
+    sliderBar(bar_percent);
   } catch (error) {
     console.error('Error fetching prices:', error);
   }
@@ -166,7 +170,7 @@ function updatePrices(
   liquidity.innerHTML = pLiquidity.toFixed(9) + '';
   marketcap.innerHTML = marketCap.toFixed(9) + '';
 
-  // return currentprice;
+  return currentprice;
 }
 
 // Function to convert human readable time to Unix time
@@ -185,8 +189,8 @@ const sliderBar = (percentage: number) => {
   const valueDisplay = document.getElementById(
     'valueDisplay',
   ) as HTMLDivElement;
-  const scaleLeft = document.getElementById('left') as HTMLDivElement;
-  const scaleRight = document.getElementById('right') as HTMLDivElement;
+  // const scaleLeft = document.getElementById('left') as HTMLDivElement;
+  // const scaleRight = document.getElementById('right') as HTMLDivElement;
 
   if (valueDisplay && slider) {
     if (percentage >= Math.pow(10, -1)) {
@@ -198,10 +202,10 @@ const sliderBar = (percentage: number) => {
     } else {
       sliderRange = 10000;
     }
-    console.log({ sliderRange, percentage });
+    // console.log({ sliderRange, percentage });
     lPercent = percentage * sliderRange;
-    scaleLeft.innerHTML = Math.pow(10, (-sliderRange * 10) / 10) + '';
-    scaleRight.innerHTML = Math.pow(10, sliderRange / 10) + '';
+    // scaleLeft.innerHTML = Math.pow(10, (-sliderRange * 10) / 10) + '';
+    // scaleRight.innerHTML = Math.pow(10, sliderRange / 10) + '';
     // Auto change slider value
     slider.value = lPercent.toString();
     const newValue = ((Math.abs(slider.valueAsNumber + 100) / 200) *
