@@ -65,6 +65,7 @@ async function fetchPrices() {
   let diff: number = 0,
     status: string = '',
     percentage: number = 0;
+  let selectedToken: any = {};
   try {
     const headers_price = {
       Authorization: 'Bearer YourAccessTokenHere',
@@ -82,42 +83,59 @@ async function fetchPrices() {
       sort_type: 'desc',
       srot_by: 'mc',
     };
-    const headers_history = {
-      Authorization: 'Bearer YourAccessTokenHere',
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-    };
-    const params_history = {
-      address: 'So11111111111111111111111111111111111111112',
-      type: '15m',
-      time_from: `${oneHourAgo}`,
-      time_to: `${currentUnixTime}`,
-    };
+    // const headers_history = {
+    //   Authorization: 'Bearer YourAccessTokenHere',
+    //   'Content-Type': 'application/json',
+    //   'x-api-key': API_KEY,
+    // };
+    // const params_history = {
+    //   address: 'So11111111111111111111111111111111111111112',
+    //   type: '15m',
+    //   time_from: `${oneHourAgo}`,
+    //   time_to: `${currentUnixTime}`,
+    // };
 
     const currentPrice = await fetchData(
       headers_price,
       params_price,
       price_endpoint,
     );
-    const AhourAgo = await fetchData(
-      headers_history,
-      params_history,
-      priceHistory,
-    );
+    // const AhourAgo = await fetchData(
+    //   headers_history,
+    //   params_history,
+    //   priceHistory,
+    // );
     const TokenList = await fetchData(
       headers_tokenList,
       params_tokenList,
       tokenList_endpoint,
     );
-    console.log({ TokenList });
+    // console.log({ TokenList });
+    if (TokenList)
+      Object.assign(
+        selectedToken,
+        tokenFilter(TokenList.data.tokens, 'MANEKI')[0],
+      );
+    console.log({ selectedToken });
+    const liquidity = selectedToken.liquidity;
+    const marketCap = selectedToken.mc;
+    console.log({ liquidity, marketCap });
     currentVal = currentPrice.data.value;
-    oldVal = AhourAgo.data.items[0].value;
-    console.log({ oldVal });
+    // oldVal = AhourAgo.data.items[0].value;
+    // console.log({ oldVal });
     status =
       currentVal > oldVal ? 'Buy' : currentVal < oldVal ? 'Sell' : 'None';
     diff = Math.abs(currentVal - oldVal);
     percentage = ((currentVal - oldVal) / oldVal) * 100;
-    updatePrices(diff, status, currentVal, percentage);
+    // updatePrices(diff, status, currentVal, percentage);
+    oldVal = updatePrices(
+      diff,
+      status,
+      currentVal,
+      percentage,
+      liquidity,
+      marketCap,
+    );
     sliderBar(percentage * 100);
   } catch (error) {
     console.error('Error fetching prices:', error);
@@ -127,35 +145,26 @@ async function fetchPrices() {
 // Function to update prices and display on UI
 function updatePrices(
   diff: number,
-  status: string,
+  pStatus: string,
   currentprice: number,
   percentage: number,
+  pLiquidity: any,
+  marketCap: any,
 ) {
   // Implementation of updating prices and status
-  const buy = document.getElementById('buy');
-  if (buy)
-    buy.innerHTML =
-      status == 'Buy'
-        ? 'State = ' +
-          `${status}, ` +
-          'Increase = ' +
-          `${diff.toFixed(2)}, ` +
-          'CurrentPrice = ' +
-          `${currentprice.toFixed(2)} ` +
-          'Percentage = ' +
-          `${percentage.toFixed(2)}`
-        : status == 'Sell'
-        ? 'State = ' +
-          `${status}, ` +
-          'Decrease = ' +
-          `${diff.toFixed(2)}, ` +
-          'CurrentPrice = ' +
-          `${currentprice.toFixed(2)} ` +
-          'Percentage = ' +
-          `${percentage.toFixed(2)} `
-        : 'State = No Activity' +
-          'CurrentPrice = ' +
-          `${currentprice.toFixed(2)}`;
+  const transaction = document.getElementById('transaction') as HTMLDivElement;
+  const status = document.getElementById('status') as HTMLDivElement;
+  const price = document.getElementById('price') as HTMLDivElement;
+  const liquidity = document.getElementById('liquidity') as HTMLDivElement;
+  const marketcap = document.getElementById('marketcap') as HTMLDivElement;
+
+  transaction.innerHTML = pStatus;
+  status.innerHTML = diff + '';
+  price.innerHTML = currentprice + '';
+  liquidity.innerHTML = pLiquidity + '';
+  marketcap.innerHTML = marketCap + '';
+
+  return currentprice;
 }
 
 // Function to convert human readable time to Unix time
@@ -199,6 +208,12 @@ const sliderBar = (percentage: number) => {
     valueDisplay.style.left = newValue + 'px';
     valueDisplay.innerHTML = slider.value + '%';
   }
+};
+
+//Function to filter Maneki token
+const tokenFilter = (tokenList: any, tokenSymbol: string) => {
+  const Maneki = tokenList.filter((ele) => ele.symbol === tokenSymbol);
+  if (Maneki) return Maneki;
 };
 
 // Interval to fetch prices every 5 seconds

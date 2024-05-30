@@ -92,16 +92,17 @@ function fetchData(headers, params, baseurl) {
 // Function to fetch prices from API
 function fetchPrices() {
     return __awaiter(this, void 0, void 0, function () {
-        var currentUnixTime, oneHourAgo, diff, status, percentage, headers_price, params_price, headers_tokenList, params_tokenList, headers_history, params_history, currentPrice, AhourAgo, TokenList, error_1;
+        var currentUnixTime, oneHourAgo, diff, status, percentage, selectedToken, headers_price, params_price, headers_tokenList, params_tokenList, currentPrice, TokenList, liquidity, marketCap, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     currentUnixTime = Math.floor(new Date().getTime() / 1000);
                     oneHourAgo = Math.floor((new Date().getTime() - 1800000) / 1000);
                     diff = 0, status = '', percentage = 0;
+                    selectedToken = {};
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 5, , 6]);
+                    _a.trys.push([1, 4, , 5]);
                     headers_price = {
                         Authorization: 'Bearer YourAccessTokenHere',
                         'Content-Type': 'application/json',
@@ -118,73 +119,53 @@ function fetchPrices() {
                         sort_type: 'desc',
                         srot_by: 'mc'
                     };
-                    headers_history = {
-                        Authorization: 'Bearer YourAccessTokenHere',
-                        'Content-Type': 'application/json',
-                        'x-api-key': API_KEY
-                    };
-                    params_history = {
-                        address: 'So11111111111111111111111111111111111111112',
-                        type: '15m',
-                        time_from: "".concat(oneHourAgo),
-                        time_to: "".concat(currentUnixTime)
-                    };
                     return [4 /*yield*/, fetchData(headers_price, params_price, price_endpoint)];
                 case 2:
                     currentPrice = _a.sent();
-                    return [4 /*yield*/, fetchData(headers_history, params_history, priceHistory)];
-                case 3:
-                    AhourAgo = _a.sent();
                     return [4 /*yield*/, fetchData(headers_tokenList, params_tokenList, tokenList_endpoint)];
-                case 4:
+                case 3:
                     TokenList = _a.sent();
-                    console.log({ TokenList: TokenList });
+                    // console.log({ TokenList });
+                    if (TokenList)
+                        Object.assign(selectedToken, tokenFilter(TokenList.data.tokens, 'MANEKI')[0]);
+                    console.log({ selectedToken: selectedToken });
+                    liquidity = selectedToken.liquidity;
+                    marketCap = selectedToken.mc;
+                    console.log({ liquidity: liquidity, marketCap: marketCap });
                     currentVal = currentPrice.data.value;
-                    oldVal = AhourAgo.data.items[0].value;
-                    console.log({ oldVal: oldVal });
+                    // oldVal = AhourAgo.data.items[0].value;
+                    // console.log({ oldVal });
                     status =
                         currentVal > oldVal ? 'Buy' : currentVal < oldVal ? 'Sell' : 'None';
                     diff = Math.abs(currentVal - oldVal);
                     percentage = ((currentVal - oldVal) / oldVal) * 100;
-                    updatePrices(diff, status, currentVal, percentage);
+                    // updatePrices(diff, status, currentVal, percentage);
+                    oldVal = updatePrices(diff, status, currentVal, percentage, liquidity, marketCap);
                     sliderBar(percentage * 100);
-                    return [3 /*break*/, 6];
-                case 5:
+                    return [3 /*break*/, 5];
+                case 4:
                     error_1 = _a.sent();
                     console.error('Error fetching prices:', error_1);
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
 }
 // Function to update prices and display on UI
-function updatePrices(diff, status, currentprice, percentage) {
+function updatePrices(diff, pStatus, currentprice, percentage, pLiquidity, marketCap) {
     // Implementation of updating prices and status
-    var buy = document.getElementById('buy');
-    if (buy)
-        buy.innerHTML =
-            status == 'Buy'
-                ? 'State = ' +
-                    "".concat(status, ", ") +
-                    'Increase = ' +
-                    "".concat(diff.toFixed(2), ", ") +
-                    'CurrentPrice = ' +
-                    "".concat(currentprice.toFixed(2), " ") +
-                    'Percentage = ' +
-                    "".concat(percentage.toFixed(2))
-                : status == 'Sell'
-                    ? 'State = ' +
-                        "".concat(status, ", ") +
-                        'Decrease = ' +
-                        "".concat(diff.toFixed(2), ", ") +
-                        'CurrentPrice = ' +
-                        "".concat(currentprice.toFixed(2), " ") +
-                        'Percentage = ' +
-                        "".concat(percentage.toFixed(2), " ")
-                    : 'State = No Activity' +
-                        'CurrentPrice = ' +
-                        "".concat(currentprice.toFixed(2));
+    var transaction = document.getElementById('transaction');
+    var status = document.getElementById('status');
+    var price = document.getElementById('price');
+    var liquidity = document.getElementById('liquidity');
+    var marketcap = document.getElementById('marketcap');
+    transaction.innerHTML = pStatus;
+    status.innerHTML = diff + '';
+    price.innerHTML = currentprice + '';
+    liquidity.innerHTML = pLiquidity + '';
+    marketcap.innerHTML = marketCap + '';
+    return currentprice;
 }
 // Function to convert human readable time to Unix time
 function convertHumanTimeToUnixTime(humanTime) {
@@ -225,6 +206,12 @@ var sliderBar = function (percentage) {
         valueDisplay.style.left = newValue + 'px';
         valueDisplay.innerHTML = slider.value + '%';
     }
+};
+//Function to filter Maneki token
+var tokenFilter = function (tokenList, tokenSymbol) {
+    var Maneki = tokenList.filter(function (ele) { return ele.symbol === tokenSymbol; });
+    if (Maneki)
+        return Maneki;
 };
 // Interval to fetch prices every 5 seconds
 setInterval(fetchPrices, 1000);

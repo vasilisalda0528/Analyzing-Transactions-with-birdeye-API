@@ -3,7 +3,7 @@
 
 <head>
     <title>Stock Prices</title>
-    <link href="" />
+    <link rel="stylesheet" href="./style/css/bootstrap.min.css">
     <style>
       body {
         font-family: 'Montserrat', sans-serif;
@@ -13,37 +13,16 @@
         width: 500px;
         text-align: center;
       }
-      .progress2 {
-        padding: 6px;
-        border-radius: 30px;
-        background: rgba(0, 0, 0, 0.25);  
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
-      }
-      .progress-bar2 {
-        height: 18px;
-        border-radius: 30px;
-        background-image: 
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
-        transition: 0.4s linear;  
-        transition-property: width, background-color;    
-      }
       #buy {
         display: inline-block;
         width: 50%;
       }
       .bar {
-        display: inline-block;
+        display: flex;
+        flex-direction: column;
         width: 50%;
-        position: relative;
-      }
-      .buy {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        border-radius: 30px;
-        background-color: #EF476F;
-        transition: width 0.4s linear, background-color 0.4s linear;  
+        align-items: center;
+        /* position: relative; */
       }
       /* #myRange {
         appearance: none; 
@@ -91,9 +70,33 @@
 
 <body>
   <div class="container">
-    <div id="buy">Buy:</div>
+    <!-- <div id="buy">Buy:</div> -->
     <div class="bar">
-      <div class="buy"></div>
+      <table class="table table-strip">
+        <thead>
+          <tr>
+            <th>Transaction</th>
+            <th>Status</th>
+            <th>Current Price</th>
+            <th>Liquidity</th>
+            <th>MarketCap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="buy" id="transaction"></td>
+            <td class="buy" id="status"></td>
+            <td class="buy" id="price"></td>
+            <td class="buy" id="liquidity"></td>
+            <td class="buy" id="marketcap"></td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- <label>Transaction : </label><div class="buy" id="transaction"></div>
+      <label>Status : </label><div class="buy" id="status"></div>
+      <label>Current Price : </label><div class="buy" id="price"></div>
+      <label>Liquidity : </label><div class="buy" id="liquidity"></div>
+      <label>MarketCap : </label><div class="buy" id="marketcap"></div> -->
     </div>
   </div>
   <input type="range" id="myRange" min="-100" max="100" value="0">
