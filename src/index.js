@@ -48,7 +48,37 @@ var tokenList_endpoint = 'https://public-api.birdeye.so/defi/tokenlist';
 var listSupportedchain_endpoint = 'https://public-api.birdeye.so/v1/wallet/list_supported_chain';
 var token_address = '25hAyBQfoDhfWx9ay6rarbgvWGwDdNqcHsXS3jQ3mTDJ';
 var currentVal = 0, oldVal = 0, bar_percent = 0;
-// Function to fetch data from API endpoint
+//Function to fetch data form Server
+function fetchServerData(headers, params, baseurl) {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, queryString;
+        return __generator(this, function (_a) {
+            url = '';
+            if (params) {
+                queryString = new URLSearchParams(params).toString();
+                url = "".concat(baseurl, "?").concat(queryString);
+            }
+            else {
+                url = baseurl;
+            }
+            return [2 /*return*/, fetch(url, {
+                    headers: headers
+                })
+                    .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                    .then(function (data) {
+                    return data;
+                })["catch"](function (error) {
+                    console.error('Error fetching data:', error);
+                })];
+        });
+    });
+}
+// Function to fetch data from Birdeye API endpoint
 function fetchData(headers, params, baseurl) {
     return __awaiter(this, void 0, void 0, function () {
         var queryString, url;
@@ -183,31 +213,25 @@ var sliderBar = function (percentage) {
     // Implementation of slider bar UI
     var slider = document.getElementById('myRange');
     var valueDisplay = document.getElementById('valueDisplay');
-    // const scaleLeft = document.getElementById('left') as HTMLDivElement;
-    // const scaleRight = document.getElementById('right') as HTMLDivElement;
     if (valueDisplay && slider) {
-        if (percentage >= Math.pow(10, -1)) {
-            sliderRange = 10;
-        }
-        else if (percentage >= Math.pow(10, -2)) {
-            sliderRange = 100;
-        }
-        else if (percentage >= Math.pow(10, -3)) {
-            sliderRange = 1000;
-        }
-        else {
-            sliderRange = 10000;
-        }
+        // if (percentage >= Math.pow(10, -1)) {
+        //   sliderRange = 1;
+        // } else if (percentage >= Math.pow(10, -2)) {
+        //   sliderRange = 10;
+        // } else if (percentage >= Math.pow(10, -3)) {
+        //   sliderRange = 100;
+        // } else {
+        //   sliderRange = 1000;
+        // }
         // console.log({ sliderRange, percentage });
-        lPercent = percentage * sliderRange;
-        // scaleLeft.innerHTML = Math.pow(10, (-sliderRange * 10) / 10) + '';
-        // scaleRight.innerHTML = Math.pow(10, sliderRange / 10) + '';
+        sliderRange = 10.0;
         // Auto change slider value
+        lPercent = percentage * sliderRange;
         slider.value = lPercent.toString();
         var newValue = ((Math.abs(slider.valueAsNumber + 100) / 200) *
             (slider.offsetWidth - 10)); // Explicitly convert to number
         valueDisplay.style.left = newValue + 'px';
-        valueDisplay.innerHTML = slider.valueAsNumber / sliderRange + '%';
+        valueDisplay.innerHTML = (lPercent / sliderRange).toFixed(2) + '%';
     }
 };
 //Function to filter Maneki token

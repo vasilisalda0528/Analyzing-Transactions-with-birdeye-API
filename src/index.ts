@@ -18,7 +18,35 @@ let currentVal: any = 0,
   oldVal: any = 0,
   bar_percent: number = 0;
 
-// Function to fetch data from API endpoint
+//Function to fetch data form Server
+async function fetchServerData(headers: any, params: any, baseurl: string) {
+  // Implementation of fetching data from API
+  let url: string = '';
+  if (params) {
+    const queryString = new URLSearchParams(params).toString();
+    url = `${baseurl}?${queryString}`;
+  } else {
+    url = baseurl;
+  }
+
+  return fetch(url, {
+    headers: headers,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error);
+    });
+}
+
+// Function to fetch data from Birdeye API endpoint
 async function fetchData(headers: any, params: any, baseurl: string) {
   // Implementation of fetching data from API
   const queryString = new URLSearchParams(params).toString();
@@ -189,29 +217,27 @@ const sliderBar = (percentage: number) => {
   const valueDisplay = document.getElementById(
     'valueDisplay',
   ) as HTMLDivElement;
-  // const scaleLeft = document.getElementById('left') as HTMLDivElement;
-  // const scaleRight = document.getElementById('right') as HTMLDivElement;
 
   if (valueDisplay && slider) {
-    if (percentage >= Math.pow(10, -1)) {
-      sliderRange = 10;
-    } else if (percentage >= Math.pow(10, -2)) {
-      sliderRange = 100;
-    } else if (percentage >= Math.pow(10, -3)) {
-      sliderRange = 1000;
-    } else {
-      sliderRange = 10000;
-    }
+    // if (percentage >= Math.pow(10, -1)) {
+    //   sliderRange = 1;
+    // } else if (percentage >= Math.pow(10, -2)) {
+    //   sliderRange = 10;
+    // } else if (percentage >= Math.pow(10, -3)) {
+    //   sliderRange = 100;
+    // } else {
+    //   sliderRange = 1000;
+    // }
     // console.log({ sliderRange, percentage });
-    lPercent = percentage * sliderRange;
-    // scaleLeft.innerHTML = Math.pow(10, (-sliderRange * 10) / 10) + '';
-    // scaleRight.innerHTML = Math.pow(10, sliderRange / 10) + '';
+    sliderRange = 10.0;
     // Auto change slider value
+    lPercent = percentage * sliderRange;
     slider.value = lPercent.toString();
+
     const newValue = ((Math.abs(slider.valueAsNumber + 100) / 200) *
       (slider.offsetWidth - 10)) as number; // Explicitly convert to number
     valueDisplay.style.left = newValue + 'px';
-    valueDisplay.innerHTML = slider.valueAsNumber / sliderRange + '%';
+    valueDisplay.innerHTML = (lPercent / sliderRange).toFixed(2) + '%';
   }
 };
 
