@@ -30,8 +30,8 @@
         border-radius: 5px;
         outline: none; /*removes default outline*/
         position: relative;
-  top: 50%;
-  transform: translateY(-117%);
+        top: 50%;
+        transform: translateY(-117%);
       }
 
       #myRange::-webkit-slider-thumb {
@@ -66,18 +66,6 @@
       table > td, th{
         width: 30px;
       }
-      #buy,
-      #sell{
-        flex: 1;
-      }
-      #buy:first-child {
-        text-align: left;
-        margin: 15px;
-      }
-      #sell:last-child {
-        text-align: right;
-        margin: 15px;
-      }
       .ticks {
         display: flex;
         justify-content: space-between;
@@ -86,7 +74,9 @@
         font-size: 10px;
         font-weight: 500;
       }
-
+      #buy,#sell{
+        margin: 10px;
+      }
     </style>
 </head>
 
@@ -115,11 +105,8 @@
         </tbody>
       </table>      
   </div>
-  <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-    <div style="display: flex; justify-content: space-between; align-items: center;width:40%;">
-      <div id="buy">Sell</div>
-      <div id="sell">Buy</div>
-    </div>
+  <div style="display: flex; justify-content: center; width: 100%;">
+    <div id="sell">Sell</div>
     <div class="progress2">
       <div class="ticks" style="width: 100%;">
         <span>-100</span>
@@ -134,11 +121,10 @@
       </div>
       <input type="range" id="myRange" min="-100" max="100" value="0">
       <div id="sliderContainer" style="position: relative;">
-        <div id="valueDisplay" style="position: absolute; top: 0; left: 0;">
+        <div id="valueDisplay" style="position: absolute; top: 0; left: 0;"></div>
       </div>
     </div>
-    </div>
-    
+    <div id="buy">Buy</div>
   </div>
   
   
