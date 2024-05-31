@@ -113,47 +113,24 @@ async function fetchPrices() {
       sort_type: 'desc',
       srot_by: 'mc',
     };
-    // const headers_history = {
-    //   Authorization: 'Bearer YourAccessTokenHere',
-    //   'Content-Type': 'application/json',
-    //   'x-api-key': API_KEY,
-    // };
-    // const params_history = {
-    //   address: token_address,
-    //   type: '1m',
-    //   time_from: `${oneHourAgo}`,
-    //   time_to: `${currentUnixTime}`,
-    // };
-
     const currentPrice = await fetchData(
       headers_price,
       params_price,
       price_endpoint,
     );
-    // console.log({ currentPrice });
-    // const AhourAgo = await fetchData(
-    //   headers_history,
-    //   params_history,
-    //   priceHistory,
-    // );
     const TokenList = await fetchData(
       headers_tokenList,
       params_tokenList,
       tokenList_endpoint,
     );
-    // console.log({ AhourAgo });
     if (TokenList)
       Object.assign(
         selectedToken,
         tokenFilter(TokenList.data.tokens, 'MANEKI')[0],
       );
-    // console.log({ selectedToken });
     const liquidity = selectedToken.liquidity;
     const marketCap = selectedToken.mc;
-    // console.log({ liquidity, marketCap });
     currentVal = currentPrice.data.value;
-    // oldVal = AhourAgo.data.items[0] ? AhourAgo.data.items[0].value : oldVal;
-    // console.log({ oldVal });
     status =
       currentVal > oldVal ? 'Buy' : currentVal < oldVal ? 'Sell' : 'None';
     diff = Math.abs(currentVal - oldVal);
@@ -161,7 +138,6 @@ async function fetchPrices() {
     bar_percent = bar_percent + percentage;
     if (percentage == Infinity) bar_percent = 0;
     console.log({ percentage, bar_percent });
-    // updatePrices(diff, status, currentVal, percentage, liquidity, marketCap);
     oldVal = updatePrices(
       diff,
       status,
@@ -219,29 +195,19 @@ const sliderBar = (percentage: number) => {
   ) as HTMLDivElement;
 
   if (valueDisplay && slider) {
-    // if (percentage >= Math.pow(10, -1)) {
-    //   sliderRange = 1;
-    // } else if (percentage >= Math.pow(10, -2)) {
-    //   sliderRange = 10;
-    // } else if (percentage >= Math.pow(10, -3)) {
-    //   sliderRange = 100;
-    // } else {
-    //   sliderRange = 1000;
-    // }
-    // console.log({ sliderRange, percentage });
     sliderRange = 80.0;
     // Auto change slider value
     lPercent = percentage * sliderRange;
     slider.value = lPercent.toString();
 
     const newValue = ((Math.abs(slider.valueAsNumber + 100) / 200) *
-      (slider.offsetWidth - 10)) as number; // Explicitly convert to number
+      (slider.offsetWidth - 30)) as number; // Explicitly convert to number
     valueDisplay.style.left = newValue + 'px';
     valueDisplay.innerHTML = (lPercent / sliderRange).toFixed(2) + '%';
   }
 };
 
-//Function to filter Maneki token
+//Function to filter Specified token
 const tokenFilter = (tokenList: any, tokenSymbol: string) => {
   const Maneki = tokenList.filter((ele) => ele.symbol === tokenSymbol);
   if (Maneki) return Maneki;

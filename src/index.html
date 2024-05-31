@@ -1,135 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+      <title>Stock Prices</title>
+      <!-- <link rel="stylesheet" href="./style/css/bootstrap.min.css"> -->
+      <style>
+        @font-face {
+          font-family: 'FantasticRock';
+          src: url('./style/fonts/f-fantastic-rock-font/FantasticRock-rg1VK.otf') format('truetype');
+          /* You can add additional file formats like .woff, .woff2, or .otf if needed */
+        }
+        @charset "UTF-8";
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
-<head>
-    <title>Stock Prices</title>
-    <link rel="stylesheet" href="./style/css/bootstrap.min.css">
-    <style>
-      body {
-        font-family: 'Montserrat', sans-serif;
-        width: 100vw;
-      }
-      .custom_container {
-        margin-top: 100px ;
-        text-align: center;
-      }
-      .progress2 {
-        width: 60%;
-        height: 40px;
-        padding-left: 6px;
-        padding-right: 6px;
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.25);  
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
-      }
-      #myRange {
-        appearance: none;
-        width: 100%;
-        height: 20px;
-        background: linear-gradient(to right, red,red,orange,orange,yellow,white,yellow,green,green,blue,blue);
-        border-radius: 5px;
-        outline: none; /*removes default outline*/
-        position: relative;
-        top: 50%;
-        transform: translateY(-117%);
-      }
+        body {
+          font-family: 'Open Sans', sans-serif;
+          font-weight: 300;
+          line-height: 1.42em;
+          color:#A7A1AE;
+          background-color:#1F2739;
+          width: 100vw;
+        }
 
-      #myRange::-webkit-slider-thumb {
-        appearance: none;
-        width: 20px;  
-        height: 30px;
-        background: lightgray;
-        border-radius: 10%;
-        cursor: pointer;
-      }
+        h1 {
+          font-size:3em; 
+          font-weight: 300;
+          line-height:1em;
+          text-align: center;
+          color: #4DC3FA;
+        }
 
-      #myRange::-moz-range-thumb {
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        background: #fff;
-        border-radius: 50%;
-        cursor: pointer;
-      }
+        h2 {
+          font-size:1em; 
+          font-weight: 300;
+          text-align: center;
+          display: block;
+          line-height:1em;
+          padding-bottom: 2em;
+          color: #FB667A;
+        }
 
-      #myRange::-ms-thumb {
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        background: #fff;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-      table{
-        width: 80%;
-      }
-      table > td, th{
-        width: 30px;
-      }
-      .ticks {
-        display: flex;
-        justify-content: space-between;
-        position: relative;
-        top: -20px;
-        font-size: 10px;
-        font-weight: 500;
-      }
-      #buy,#sell{
-        margin: 10px;
-      }
-    </style>
-</head>
+        h2 a {
+          font-weight: 700;
+          text-transform: uppercase;
+          color: #FB667A;
+          text-decoration: none;
+        }
 
-<body>
-  
-  <div class="custom_container">
-    <!-- <div id="buy">Buy:</div> -->
-      <table class="table table-strip">
+        .blue { color: #185875; }
+        .yellow { color: #FFF842; }
+
+        .container th h1 {
+            font-weight: bold;
+            font-size: 1em;
+          text-align: center;
+          color: #185875;
+        }
+
+        .container td {
+            font-weight: normal;
+            font-size: 1em;
+          -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+            -moz-box-shadow: 0 2px 2px -2px #0E1119;
+                  box-shadow: 0 2px 2px -2px #0E1119;
+        }
+
+        .container {
+            text-align: left;
+            overflow: hidden;
+            width: 80%;
+            margin: 0 auto;
+          display: table;
+          padding: 0 0 8em 0;
+        }
+
+        .container td, .container th {
+            padding-bottom: 2%;
+            padding-top: 2%;
+          padding-left:2%;  
+        }
+
+        /* Background-color of the odd rows */
+        .container tr:nth-child(odd) {
+            background-color: #323C50;
+        }
+
+        /* Background-color of the even rows */
+        .container tr:nth-child(even) {
+            background-color: #2C3446;
+        }
+
+        .container th {
+            background-color: #1F2739;
+        }
+
+        .container td:first-child { color: #FB667A; }
+
+        .container tr:hover {
+          background-color: #464A52;
+        -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+            -moz-box-shadow: 0 6px 6px -6px #0E1119;
+                  box-shadow: 0 6px 6px -6px #0E1119;
+        }
+
+        .container td:hover {
+          background-color: #FFF842;
+          color: #403E10;
+          font-weight: bold;
+          
+          box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+          transform: translate3d(6px, -6px, 0);
+          
+          transition-delay: 0s;
+            transition-duration: 0.4s;
+            transition-property: all;
+          transition-timing-function: line;
+        }
+
+        @media (max-width: 800px) {
+        .container td:nth-child(4),
+        .container th:nth-child(4) { display: none; }
+        }
+        .my-font {
+          font-family: 'FantasticRock', sans-serif;
+        }
+
+        .progress2 {
+          text-align: center;
+          width: 60%;
+          height: 40px;
+          padding-left: 6px;
+          padding-right: 6px;
+          border-radius: 10px;
+          background: rgba(0, 0, 0, 0.25);  
+          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .board{
+          display: flex;
+          justify-content: center;
+          width: 100%;
+          margin-top: 10%;
+        }
+
+        /* Additional styles for smooth range slider */
+        #myRange {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 20px;
+          background: linear-gradient(to right, red, red, orange, orange, yellow, white, yellow, green, green, blue, blue);
+          border-radius: 5px;
+          outline: none; 
+          position: relative;
+          top: 50%;
+          transform: translateY(-170%);
+          transition: all 1s ease;
+        }
+
+        #myRange::-webkit-slider-thumb {
+          appearance: none;
+          width: 20px;  
+          height: 30px;
+          background: lightgray;
+          border-radius: 10%;
+          cursor: pointer;
+          -webkit-transition: all 0.3s ease; /* Smooth transition for WebKit browsers */
+          transition: all 0.3s ease; 
+        }
+
+        #myRange::-moz-range-thumb {
+          -webkit-transition: all 0.3s ease; /* Smooth transition for WebKit browsers */
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          background: #fff;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: all 0.3s ease; 
+        }
+
+        #myRange::-ms-thumb {
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          background: #fff;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: all 1s ease; 
+        } 
+
+        table{
+          width: 80%;
+        }
+
+        table > td, th{
+          width: 30px;
+        }
+
+        .ticks {
+          display: flex;
+          justify-content: space-between;
+          position: relative;
+          top: -20px;
+          font-size: 10px;
+          font-weight: 500;
+        }
+        
+        #buy,#sell{
+          margin: 10px;
+          font-family: 'FantasticRock', sans-serif;
+        }
+      </style>
+  </head>
+
+  <body>
+    <!-- <h1><span class="blue">&lt;</span>Table<span class="blue">&gt;</span> <span class="yellow">Responsive</pan></h1> -->
+      <!-- <h2>Created with love by Vasili</h2> -->
+      
+      <table class="container">
         <thead>
           <tr>
-            <th>Transaction</th>
-            <th>Difference</th>
-            <th>Current Price</th>
-            <th>Liquidity</th>
-            <th>MarketCap</th>
+            <th><h1>Transaction</h1></th>
+            <th><h1>Difference</h1></th>
+            <th><h1>Current Price</h1></th>
+            <th><h1>Liquidity</h1></th>
+            <th><h1>MarketCap</h1></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="buy" id="transaction"></td>
-            <td class="buy" id="status"></td>
-            <td class="buy" id="price"></td>
-            <td class="buy" id="liquidity"></td>
-            <td class="buy" id="marketcap"></td>
+            <td id="transaction"></td>
+            <td id="status"></td>
+            <td id="price"></td>
+            <td id="liquidity"></td>
+            <td id="marketcap"></td>
           </tr>
         </tbody>
-      </table>      
-  </div>
-  <div style="display: flex; justify-content: center; width: 100%;">
-    <div id="sell">Sell</div>
-    <div class="progress2">
-      <div class="ticks" style="width: 100%;">
-        <span>-100</span>
-        <span>-75</span>
-        <span>-50</span>
-        <span>-25</span>
-        <span>0</span>
-        <span>25</span>
-        <span>50</span>
-        <span>75</span>
-        <span>100</span>
-      </div>
-      <input type="range" id="myRange" min="-100" max="100" value="0">
-      <div id="sliderContainer" style="position: relative;">
-        <div id="valueDisplay" style="position: absolute; top: 0; left: 0;"></div>
-      </div>
+      </table>
+      <div class="board">
+        <div id="sell">Sell</div>
+        <div class="progress2">
+            <div class="ticks" style="width: 100%;">
+                <span>100</span>
+                <span>75</span>
+                <span>50</span>
+                <span>25</span>
+                <span>0</span>
+                <span>25</span>
+                <span>50</span>
+                <span>75</span>
+                <span>100</span>
+            </div>
+            <input type="range" id="myRange" min="-100" max="100" value="0">
+            <div id="sliderContainer" style="position: relative;">
+                <div id="valueDisplay" style="position: absolute; top: 0; left: 0;"></div>
+            </div>
+        </div>
+        <div id="buy">Buy</div>
     </div>
-    <div id="buy">Buy</div>
-  </div>
-  
-  
-  <script src="index.js"></script>
-</body>
-
+    <script src="index.js"></script>
+  </body>
 </html> 
 
