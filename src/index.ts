@@ -205,7 +205,7 @@ const sliderBar = (percentage: number) => {
 
 //Function to filter Specified token
 const tokenFilter = (tokenList: any, tokenSymbol: string) => {
-  const Maneki = tokenList.filter((ele) => ele.symbol === tokenSymbol);
+  const Maneki = tokenList.filter((ele: any) => ele.symbol === tokenSymbol);
   if (Maneki) return Maneki;
 };
 
