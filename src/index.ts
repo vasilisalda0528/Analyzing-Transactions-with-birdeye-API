@@ -186,8 +186,6 @@ function convertHumanTimeToUnixTime(humanTime: string): number {
 
 // Function to initialize and update slider bar UI
 const sliderBar = (percentage: number) => {
-  let lPercent: number = 0,
-    sliderRange: number = 0;
   // Implementation of slider bar UI
   const slider = document.getElementById('myRange') as HTMLInputElement;
   const valueDisplay = document.getElementById(
@@ -195,15 +193,13 @@ const sliderBar = (percentage: number) => {
   ) as HTMLDivElement;
 
   if (valueDisplay && slider) {
-    sliderRange = 80.0;
     // Auto change slider value
-    lPercent = percentage * sliderRange;
-    slider.value = lPercent.toString();
+    slider.value = (percentage * 10).toString();
 
-    const newValue = ((Math.abs(slider.valueAsNumber + 100) / 200) *
+    const newValue = ((Math.abs(slider.valueAsNumber + 50) / 100) *
       (slider.offsetWidth - 30)) as number; // Explicitly convert to number
     valueDisplay.style.left = newValue + 'px';
-    valueDisplay.innerHTML = (lPercent / sliderRange).toFixed(2) + '%';
+    valueDisplay.innerHTML = (slider.valueAsNumber / 10).toFixed(2) + '%';
   }
 };
 

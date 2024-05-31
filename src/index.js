@@ -204,19 +204,16 @@ function convertHumanTimeToUnixTime(humanTime) {
 }
 // Function to initialize and update slider bar UI
 var sliderBar = function (percentage) {
-    var lPercent = 0, sliderRange = 0;
     // Implementation of slider bar UI
     var slider = document.getElementById('myRange');
     var valueDisplay = document.getElementById('valueDisplay');
     if (valueDisplay && slider) {
-        sliderRange = 80.0;
         // Auto change slider value
-        lPercent = percentage * sliderRange;
-        slider.value = lPercent.toString();
-        var newValue = ((Math.abs(slider.valueAsNumber + 100) / 200) *
+        slider.value = (percentage * 10).toString();
+        var newValue = ((Math.abs(slider.valueAsNumber + 50) / 100) *
             (slider.offsetWidth - 30)); // Explicitly convert to number
         valueDisplay.style.left = newValue + 'px';
-        valueDisplay.innerHTML = (lPercent / sliderRange).toFixed(2) + '%';
+        valueDisplay.innerHTML = (slider.valueAsNumber / 10).toFixed(2) + '%';
     }
 };
 //Function to filter Specified token
