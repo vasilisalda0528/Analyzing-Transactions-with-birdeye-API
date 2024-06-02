@@ -90,8 +90,6 @@ async function fetchData(headers: any, params: any, baseurl: string) {
 // Function to fetch prices from API
 async function fetchPrices() {
   // Implementation of fetching prices from API
-  const currentUnixTime = Math.floor(new Date().getTime() / 1000);
-  const oneHourAgo = Math.floor((new Date().getTime() - 60000) / 1000);
   let diff: number = 0,
     status: string = '',
     percentage: number = 0;
