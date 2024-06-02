@@ -191,13 +191,14 @@ const sliderBar = (percentage: number) => {
   ) as HTMLDivElement;
 
   if (valueDisplay && slider) {
+    //range = min + max of <input type='range'>
+    const range: number = 20;
     // Auto change slider value
-    slider.value = (percentage * 10).toString();
-
-    const newValue = ((Math.abs(slider.valueAsNumber + 50) / 100) *
+    slider.value = percentage.toString();
+    const newValue = ((Math.abs(slider.valueAsNumber + range / 2) / range) *
       (slider.offsetWidth - 30)) as number; // Explicitly convert to number
     valueDisplay.style.left = newValue + 'px';
-    valueDisplay.innerHTML = (slider.valueAsNumber / 10).toFixed(2) + '%';
+    valueDisplay.innerHTML = slider.valueAsNumber.toFixed(2) + '%';
   }
 };
 

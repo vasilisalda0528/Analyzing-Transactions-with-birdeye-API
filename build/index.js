@@ -126,12 +126,10 @@ function fetchData(headers, params, baseurl) {
 // Function to fetch prices from API
 function fetchPrices() {
     return __awaiter(this, void 0, void 0, function () {
-        var currentUnixTime, oneHourAgo, diff, status, percentage, selectedToken, headers_price, params_price, headers_tokenList, params_tokenList, currentPrice, TokenList, liquidity, marketCap, error_1;
+        var diff, status, percentage, selectedToken, headers_price, params_price, headers_tokenList, params_tokenList, currentPrice, TokenList, liquidity, marketCap, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    currentUnixTime = Math.floor(new Date().getTime() / 1000);
-                    oneHourAgo = Math.floor((new Date().getTime() - 60000) / 1000);
                     diff = 0, status = '', percentage = 0;
                     selectedToken = {};
                     _a.label = 1;
@@ -211,12 +209,14 @@ var sliderBar = function (percentage) {
     var slider = document.getElementById('myRange');
     var valueDisplay = document.getElementById('valueDisplay');
     if (valueDisplay && slider) {
+        //range = min + max of <input type='range'>
+        var range = 20;
         // Auto change slider value
-        slider.value = (percentage * 10).toString();
-        var newValue = ((Math.abs(slider.valueAsNumber + 50) / 100) *
+        slider.value = percentage.toString();
+        var newValue = ((Math.abs(slider.valueAsNumber + range / 2) / range) *
             (slider.offsetWidth - 30)); // Explicitly convert to number
         valueDisplay.style.left = newValue + 'px';
-        valueDisplay.innerHTML = (slider.valueAsNumber / 10).toFixed(2) + '%';
+        valueDisplay.innerHTML = slider.valueAsNumber.toFixed(2) + '%';
     }
 };
 //Function to filter Specified token

@@ -10,7 +10,7 @@
           /* You can add additional file formats like .woff, .woff2, or .otf if needed */
         }
         @charset "UTF-8";
-        @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+        /* @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700); */
 
         body {
           font-family: 'Open Sans', sans-serif;
@@ -240,6 +240,11 @@
         <div id="sell">Sell</div>
         <div class="progress2">
             <div class="ticks" style="width: 100%;">
+                <span>10</span>
+                <span>9</span>
+                <span>8</span>
+                <span>7</span>
+                <span>6</span>
                 <span>5</span>
                 <span>4</span>
                 <span>3</span>
@@ -251,8 +256,13 @@
                 <span>3</span>
                 <span>4</span>
                 <span>5</span>
+                <span>6</span>
+                <span>7</span>
+                <span>8</span>
+                <span>9</span>
+                <span>10</span>
             </div>
-            <input type="range" id="myRange" min="-50" max="50" value="0">
+            <input type="range" id="myRange" min="-10" max="10" step='0.01' value="0">
             <div id="sliderContainer" style="position: relative;">
                 <div id="valueDisplay" style="position: absolute; top: 0; left: 0;"></div>
             </div>
